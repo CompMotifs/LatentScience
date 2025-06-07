@@ -7,13 +7,15 @@
             - how it works
             - the goal of its use
         - Rewrite each explanation above by replacing all terms with the most general way of saying it
-2. Take the above prompt outputs and identify the commonalities
+2. For each category1, category2 above in [[concept, method, challenge] for each paper]
+    - Is there overlap between the explanations in category1 with those in category2?
+    
 
 Prompts for the above
-1. "I'm providing you with a scientific paper. Please identify every concept, method, and challenge mentioned. For each item you identify, provide two explanations:
+1. "I'm providing you with a scientific paper. Please identify every concept, method, and challenge present in the paper. For each item you identify, provide two explanations:
 
-A detailed but simple explanation focusing on how it works and the goal of its use.
-A rewritten version of that explanation, replacing all specific terms with the most general way of describing them."
+- A detailed but simple explanation focusing on how it works and the goal of its use.
+- A rewritten version of that explanation, replacing all specific terms with the most general way of describing them."
 
 
 
@@ -46,6 +48,8 @@ Example: I tried the above onto the paper "A blueprint for a synthetic genetic f
 ## Examples
 
 ### Output from "A blueprint for a synthetic genetic feedback optimizer"
+
+#### Gemini
 Here's a breakdown of the key concepts, methods, and challenges from the paper, explained in the simplest possible terms:
 
 Concepts

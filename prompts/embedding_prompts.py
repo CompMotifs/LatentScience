@@ -1,3 +1,9 @@
+
+
+import tensorflow as tf
+from transformers import AutoTokenizer, TFAutoModel
+
+
 class EmbeddingPrompts:
     def get_rephrasing_prompt(self, paper_text: str, research_question: str) -> str:
         """Task 2: Prompt for rephrasing paper and research question"""
@@ -37,3 +43,24 @@ Please expand this into a comprehensive research summary that includes:
 
 Keep it focused and under 400 words.
 """
+
+
+# Luna's code
+tokenizer = AutoTokenizer.from_pretrained("allenai/specter")
+encoder = TFAutoModel.from_pretrained("allenai/specter")
+
+doi_to_vector = {}
+def encode_papers(doi_to_title_abs, doi_to_vector):
+    papers = [doi_to_title_abs[paper][0] + tokenizer.sep_token + doi_to_title_abs[paper][1] for paper in doi_to_title_abs]
+    inputs = tokenizer(papers, padding="max_length", truncation=True, max_length=512, return_tensors="tf")
+    results = encoder(**inputs)
+    last = results.last_hidden_state[:, 0, :]
+    embeds = tf.nn.l2_normalize(last, axis=1) # this is the raw EagerTensor output
+    embeds = tf.keras.backend.get_value(embeds)
+
+    counter = 0 # initialise at element 0 of embeds, adds one after processing each paper
+    for paper in doi_to_title_abs:
+    doi_to_vector[paper] = embeds[counter]
+    counter +=1
+
+    return doi_to_vector
