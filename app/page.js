@@ -1,68 +1,77 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
+import Cover from "./_components/Cover";
+import Main from "./_components/Main";
 
 export default function App() {
-  const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [abstract, setAbstract] = useState("");
-  const handleQuery = (text) => {
-    setQuery(text);
-  };
-  const handleAbstract = (text) => {
-    setAbstract(text);
+  const [status, setStatus] = useState(0);
+  const handleNext = () => {
+    setStatus((status) => status + 1);
   };
 
-  const handleStart = async (e) => {
-    e.preventDefault();
-    // THIS LINE IS WHERE YOU WILL SEND THE POST REQUEST WITH THE USER'S INPUT
+  // data is what the user inputs from the frontend
+  const [data, setData] = useState({
+    query: "",
+    abstract: "",
+  });
+  // papers is what the backend sends to the frontend to display
+  const [papers, setPapers] = useState({
+    title1: "",
+    abstract1: "",
+    title2: "",
+    abstract2: "",
+    title3: "",
+    abstract3: "",
+  });
+  const handleDataChange = useCallback((field, value) => {
+    setData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  }, []);
+  const handlePapersChange = useCallback((field, value) => {
+    setPapers((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  }, []);
 
-    if (error) {
-      console.error("POST request error:", error);
-      router.push("/error");
-    } else {
-      router.push("/search");
-    }
-  };
+  // This is the function which communicates with the backend, you need to send the variable "data" over to the python script,
+  // and return the three papers to display, set the values of the variable "papers" to the output using the function "handlePapersChange".
+  // const handleCompute = async (e) => {
+  //   e.preventDefault();
+  //   // You send the POST request to the backend here, and receive the output of the Python file as json.
+
+  //   if (error) {
+  //     console.error("POST request error:", error);
+  //     router.push("/error");
+  //   } else {
+  //     // if request successful
+  //     // You should use function "setPapers" to modify the value of papers here.
+  //     handleDataChange("abstract", ""); // set abstract field of user input to empty string.
+  //   }
+  // };
 
   return (
-    <div>
-      <p className="flex flex-col text-2xl mt-4 mb-8 text-slate-700">
-        LatentScience is a scientific reasoning engine which helps you traverse
-        the whole academic literature to answer your scientific question. It
-        identifies hidden links, shared concepts, and all that can help you
-        accelerate your research.
-      </p>
-      <p className="flex flex-col text-2xl mb-8 text-slate-700">
-        Start here by giving us your scientific question, and one abstract to
-        get the algorithm going.
-      </p>
+    <>
+      <div className={status === 0 ? "" : "hidden"}>
+        <Cover
+          handleDataChange={handleDataChange}
+          handleNext={handleNext}
+          data={data}
+          // handleCompute={handleCompute}
+        />
+      </div>
 
-      <input
-        type="email"
-        placeholder="Your scientific query goes here."
-        maxLength={50}
-        value={query}
-        onChange={(e) => handleQuery(e.target.value)}
-        className=" w-1/2 px-4 py-2 rounded-lg shadow-xl border-b-2 mb-8 border-b-gray-700 focus:outline-none focus:border-b-2 focus:border-b-purple-700 transition-all duration-300 ease-in-out transform focus:scale-105 origin-top-left"
-      />
-
-      <textarea
-        placeholder="Your abstract goes here."
-        maxLength={5000}
-        value={abstract}
-        onChange={(e) => handleAbstract(e.target.value)}
-        rows={6}
-        className="w-full px-4 py-3 rounded-lg shadow-xl border-2 mb-8 border-gray-300 focus:outline-none focus:border-purple-700 transition-all duration-300 ease-in-out"
-      />
-
-      <button
-        onClick={handleStart}
-        className="bg-purple-700 text-white text-[24px] font-bold px-6 py-2 rounded shadow-xl origin-top-left transition-transform duration-200 hover:scale-105 active:scale-95"
-      >
-        Start!
-      </button>
-    </div>
+      <div className={status === 1 ? "" : "hidden"}>
+        <Main
+          handleDataChange={handleDataChange}
+          data={data}
+          papers={papers}
+          // handleCompute={handleCompute}
+        />
+      </div>
+    </>
   );
 }

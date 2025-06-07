@@ -12,7 +12,7 @@ export default function Header() {
             height="180"
             quality={100}
             width="450"
-            alt="The Papertrove.ai logo"
+            alt="The LatentScience logo"
           />
         </Link>
       </div>
