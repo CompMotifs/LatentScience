@@ -1,0 +1,32 @@
+# Core dependencies
+modal
+fastapi
+uvicorn
+pydantic>=2.0
+python-dotenv
+
+# Database
+sqlalchemy
+alembic
+psycopg2-binary
+
+# ML/AI
+numpy
+scipy
+scikit-learn
+openai
+anthropic
+sentence-transformers
+torch
+
+# Text processing
+nltk
+spacy
+beautifulsoup4
+requests
+
+# Development
+pytest
+black
+flake8
+mypy
