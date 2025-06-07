@@ -1,0 +1,46 @@
+{
+  "prompt_chain_goal": "To progressively simplify explanations of scientific concepts, methods, and challenges from a paper, aiming for the most simple terms possible.",
+  "prompts": [
+    {
+      "step": 1,
+      "type": "Concept Identification",
+      "instruction": "Please read the following abstract and introduction from a scientific paper. After reading, identify 3-5 key concepts, methods, or challenges that appear to be central to the paper. List them out.",
+      "user_action": "User pastes the abstract and introduction here."
+    },
+    {
+      "step": 3,
+      "type": "Concept Simplification - Iteration 1 (5-year-old)",
+      "instruction": "Let's take the first item from your list: '[Insert first identified concept/method/challenge here, e.g., 'Quantum Entanglement' or 'The challenge of data scarcity in LLM training']. In a single sentence, what is the absolute simplest way to explain this to a 5-year-old?"
+    },
+    {
+      "step": 4,
+      "type": "Concept Simplification - Iteration 2 (8-year-old)",
+      "instruction": "That's a good start. Now, expand on that explanation slightly, as if you were explaining it to a curious 8-year-old. Use analogies if helpful, but keep it very concise and avoid jargon."
+    },
+    {
+      "step": 5,
+      "type": "Concept Simplification - Iteration 3 (12-year-old)",
+      "instruction": "Let's try explaining it to a bright 12-year-old. What's the next layer of detail we can add without using any technical terms that wouldn't be in a common vocabulary? Focus on the 'what' and 'why' it matters, still keeping it under three sentences."
+    },
+    {
+      "step": 6,
+      "type": "Concept Simplification - Iteration 4 (Intelligent high school student)",
+      "instruction": "Now, explain the same concept as if you were talking to a very intelligent high school student who has *no* background in this specific scientific field. What are the essential pieces of information they need to grasp the core idea, without needing to understand the underlying complex mathematics or detailed mechanisms? Aim for a paragraph (3-5 sentences) and define any necessary terms in extremely simple language."
+    },
+    {
+      "step": 7,
+      "type": "Concept Simplification - Iteration 5 (Non-science background)",
+      "instruction": "Imagine you are trying to explain this concept to someone who has never studied science before. What is the fundamental essence of this concept that *anyone* could understand, regardless of their background? Strip away all academic conventions and focus purely on the core idea in the most relatable way possible. Use an everyday analogy if you can."
+    },
+    {
+      "step": 8,
+      "type": "Specific Challenge Explanation",
+      "instruction": "You mentioned '[Insert a specific challenge identified earlier, e.g., 'The challenge of reproducibility in neuroscience research']. Could you explain this challenge in the simplest way possible, as if explaining it to someone who is unfamiliar with scientific research at all? Focus on *why* it's a problem and *what* makes it difficult, without using any technical research terms."
+    },
+    {
+      "step": 9,
+      "type": "Final Synthesis",
+      "instruction": "Now, considering all the simplifications we've done for [Concept 1], [Concept 2], and [Challenge 1], imagine you're writing a very short, plain-language summary of this paper for a general audience. Can you combine the simplest explanations of these key elements into a paragraph or two, ensuring the language is accessible to anyone? The goal is to convey the paper's main idea and significance without any prior knowledge required."
+    }
+  ]
+}
