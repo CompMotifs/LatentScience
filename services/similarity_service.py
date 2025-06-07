@@ -7,6 +7,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+class SimilarityService(nn.CosineSimilarity):
+    def __init__(self, top_choices=0, dim=1, eps=1e-6):
+        super(SimilarityService, self).__init__(dim=dim, eps=eps)
+        self.top_choices = top_choices
+    
+    def forward(self, query, database):
+        similarity = F.cosine_similarity(query, database, self.dim, self.eps)
+        descending_idx = torch.argsort(similarity, descending=True)
+
+        if self.top_choices:
+            top_picks_idx = descending_idx[:self.top_choices]
+            top_picks = database_emb[top_picks_idx]
+            return top_picks, top_picks_idx
+        else:
+            return database_emb[descending_idx], descending_idx
 
 class SimilarityService:
     def __init__(self):
