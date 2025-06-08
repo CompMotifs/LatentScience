@@ -13,6 +13,16 @@ class SimilarityService(nn.CosineSimilarity):
         self.top_choices = top_choices
     
     def forward(self, query, database):
+        """
+        Calculates the similarity between embeddings.
+
+        Args:
+            query: Represents the embedding for the query [1, embeddings]
+            database: Represents the embeddings for all values in the database [50, embeddings]
+
+        Returns:
+            returns: the top most similar database_embeddings and their corresponding id
+        """
         similarity = F.cosine_similarity(query, database, self.dim, self.eps)
         descending_idx = torch.argsort(similarity, descending=True)
 
