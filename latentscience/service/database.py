@@ -38,7 +38,7 @@ class EmbeddingRecord(Base):
 
 
 class DatabaseService:
-    def __init__(self):
+    def __init__(self, pg_conn: Connection):
         self.database_url = os.getenv("DATABASE_URL", "sqlite:///papers.db")
         self.engine = create_engine(self.database_url)
         Base.metadata.create_all(self.engine)

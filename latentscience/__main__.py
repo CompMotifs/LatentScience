@@ -5,8 +5,8 @@ import sys
 from sentence_transformers import SentenceTransformer
 import uvicorn
 
-from latentscience.api.api import create_api_app
-from latentscience.config import settings
+from latentscience.api.app import create_app
+from latentscience.config import get_settings
 from latentscience.utils.populate_database import (
     get_db_connection,
     setup_database,
@@ -21,6 +21,7 @@ def populate_database():
     """Populate the database with sample papers and embeddings."""
 
     print("Populating database...")
+    settings = get_settings()
 
     # Establish database connection
     conn = get_db_connection(settings)
@@ -49,7 +50,7 @@ def populate_database():
 
 def start_api():
     """Start the API server."""
-    app = create_api_app()
+    app = create_app()
 
     print("Starting API...")
     port = int(os.getenv("PORT", "8000"))
