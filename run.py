@@ -1,5 +1,4 @@
 # We can rename / move this
-
 from LatentScience.services import SimilarityService
 
 
@@ -30,7 +29,8 @@ def find_comparison(abstract, research_question):
     # Return the top picks
     return top_picks, top_picks_idx
     
-def main():
+
+def main(prompt):
     
     # Find top similar paper
     find_comparison(
