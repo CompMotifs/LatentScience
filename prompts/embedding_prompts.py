@@ -60,7 +60,7 @@ class EmbeddingPrompts:
     Title: {paper_title}
     Abstract: {abstract}
     """
-    
+
     
 class Paper:
     """
