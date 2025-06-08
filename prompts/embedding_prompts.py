@@ -60,6 +60,27 @@ class EmbeddingPrompts:
     Title: {paper_title}
     Abstract: {abstract}
     """
+    
+    def get_comparison_prompt(self, paper):
+        return f"""Take the descriptions of challenges in two 
+    different papers and highlight similarities between them. 
+    The goal is to find common areas in disparate research fields 
+    that have the same goals or use the methodologies or concepts, 
+    but where this is not obvious. 
+    
+    Output your analysis as a json 
+    file. The fields should be "cross_disciplinary_commonalities", 
+    "research_fields", and "meta_analysis". Within the cross_disciplinary_commonalities 
+    field, list your similarities as sub-fields named as the commonalities, 
+    with each commonality subdivided as “description” (state the link), 
+    "source" (theme in the first input), "target" (theme in the second input), 
+    “common_insight” (explain the link). Within "research_fields" state the 
+    "source_field" and "target_field" research fields. Within "meta_analysis", 
+    analyse in terms of "cross_disciplinary_potential”, "methodological_overlap”, 
+    "universal_principles”, “structural_analogies”, “Cross_cutting_themes”, 
+    and “shared_concepts”, where applicable.
+    """
+
 
     
 class Paper:
