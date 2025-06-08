@@ -4,6 +4,8 @@ from LatentScience.services import SimilarityService
 import anthropic
 import os
 
+csv_path = 'abstract.csv'
+
 anthropic_client = anthropic.Anthropic(api_key="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")
 
 def get_claude_layman(content_prompt):
