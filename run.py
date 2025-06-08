@@ -8,6 +8,18 @@ csv_path = 'abstract.csv'
 
 anthropic_client = anthropic.Anthropic(api_key="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")
 
+
+def database_prompts(csv_path):
+    with open(csv_path, mode="r", encoding="utf-8", newline="") as files:
+        reader = csv.reader(files)
+        next(reader)
+        for row in reader:
+            abstract = row[1]
+            prompt_abstract = prompter.get_rephrasing_prompt(paper_text=abstract, research_question=research_question)
+
+            list_of_prompts.append(prompt_abstract)
+    return list_of_prompts
+
 def get_claude_layman(content_prompt):
     message = anthropic_client.messages.create(
         model="claude-3-opus-20240229",
