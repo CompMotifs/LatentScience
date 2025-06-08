@@ -1,4 +1,3 @@
-import os
 from typing import Optional
 from pydantic_settings import BaseSettings
 
@@ -9,7 +8,11 @@ class Settings(BaseSettings):
     anthropic_api_key: Optional[str] = None
 
     # Database
-    database_url: str = "sqlite:///./papers.db"
+    pg_host: str = "localhost"
+    pg_database: str = "latentscience"
+    pg_user: str = "postgres"
+    pg_password: str = "password"
+    pg_port: int = 5432
 
     # Application
     debug: bool = False
@@ -28,7 +31,7 @@ class Settings(BaseSettings):
     openai_requests_per_minute: int = 50
 
     class Config:
-        env_file = ".env"
+        env_file = ".env.local"
         case_sensitive = False
 
 

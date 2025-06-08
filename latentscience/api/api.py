@@ -1,8 +1,7 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from app.models.paper import PaperSearchRequest, Paper
-from app.models.embedding import EmbeddingRequest
-from app.models.similarity import SimilarityBatch
+from latentscience.models.paper import PaperSearchRequest
+from latentscience.models.embedding import EmbeddingRequest
 from typing import List, Dict
 import logging
 import random

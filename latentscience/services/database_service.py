@@ -1,6 +1,5 @@
 import os
-import json
-from typing import List, Dict, Optional
+from typing import List, Dict
 from sqlalchemy import create_engine, Column, String, Text, DateTime, Float, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker

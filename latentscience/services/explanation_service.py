@@ -1,7 +1,6 @@
 import openai
 import os
 from typing import Dict, List
-from app.models.similarity import LinkExplanation
 from prompts.explanation_prompts import ExplanationPrompts
 import logging
 
@@ -28,6 +27,8 @@ class ExplanationService:
                 max_tokens=500,
                 temperature=0.7,
             )
+            if not response.choices or not response.choices[0].message.content:
+                raise ValueError("No valid rewponse from the LLM API")
             return response.choices[0].message.content.strip()
         except Exception as e:
             logger.error(f"Error generating explanation: {e}")

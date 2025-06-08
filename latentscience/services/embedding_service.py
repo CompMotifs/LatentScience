@@ -1,8 +1,6 @@
 import openai
 import os
-from typing import List, Dict, Any
-from app.models.embedding import EmbeddingRequest, EmbeddingResponse
-from app.models.paper import Paper, ResearchQuestion
+from typing import List
 from prompts.embedding_prompts import EmbeddingPrompts
 import logging
 
@@ -25,6 +23,8 @@ class EmbeddingService:
                 max_tokens=1000,
                 temperature=0.3,
             )
+            if not response.choices or not response.choices[0].message.content:
+                raise ValueError("No valid rewponse from the LLM API")
             return response.choices[0].message.content.strip()
         except Exception as e:
             logger.error(f"Error rephrasing text: {e}")

@@ -1,5 +1,5 @@
 import modal
-from app.config import settings
+from latentscience.api.api import create_api_app
 from services.embedding_service import EmbeddingService
 from services.similarity_service import SimilarityService
 from services.explanation_service import ExplanationService
@@ -11,7 +11,7 @@ app = modal.App("paper-links")
 # Define the image with all dependencies
 image = (
     modal.Image.debian_slim()
-    .pip_install_from_requirements("requirements.txt")
+    .pip_install_from_pyproject("pyproject.toml")
     .run_commands("python -m spacy download en_core_web_sm")
 )
 
@@ -150,7 +150,6 @@ def web_app():
 @modal.web_endpoint(method="POST", label="api")
 def api_endpoint():
     """Main API endpoint for the paper linking service"""
-    from web.api import create_api_app
 
     return create_api_app()
 

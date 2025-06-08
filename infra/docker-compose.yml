@@ -1,0 +1,38 @@
+# docker-compose.yml
+# To run this, navigate to the directory containing this file and execute:
+# docker-compose up -d
+
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      PG_HOST: db
+      PG_DATABASE: latentscience
+      PG_USED: postgres
+      PG_PASSWORD: postgres
+      PG_PORT: 5432
+    depends_on:
+      - db
+    restart: unless-stopped
+  db:
+    # Use an image that includes the pgvector extension
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: latentscience
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      # This will persist the database data on your local machine
+      - ./db/data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

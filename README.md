@@ -200,7 +200,7 @@ paper-links-app/
 1. **Create a new service**
    ```python
    # services/new_service.py
-   from app.models.your_model import YourModel
+   from latentscience.models.your_model import YourModel
    
    class NewService:
        def process(self, data):
@@ -292,7 +292,7 @@ python -c "import openai; print(openai.Model.list())"
 pg_isready -h localhost -p 5432
 
 # Check SQLAlchemy connection
-python -c "from app.main import DatabaseService; db = DatabaseService(); print('Connected!')"
+python -c "from latentscience.main import DatabaseService; db = DatabaseService(); print('Connected!')"
 ```
 
 ### Debugging
