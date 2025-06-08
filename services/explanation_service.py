@@ -1,7 +1,6 @@
 import openai
 import os
 from typing import Dict, List
-from app.models.similarity import LinkExplanation
 from prompts.explanation_prompts import ExplanationPrompts
 import logging
 

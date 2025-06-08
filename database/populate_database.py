@@ -1,20 +1,9 @@
-# # in terminal
-# python -m venv myenv
-# myenv\Scripts\activate
-# pip install numpy pandas matplotlib
-
-# pip install sentence-transformers 
-# pip install psycopg2-binary pgvector
-
-# docker-compose up -d 
+# docker-compose up -d
 # python populate_database.py
 
-# populate_database.py
 import psycopg2
 from psycopg2.extras import DictCursor
 from sentence_transformers import SentenceTransformer
-import numpy as np
-import os
 
 # --- 1. Configuration ---
 # Database connection details
@@ -25,7 +14,7 @@ DB_PASSWORD = "password"
 DB_PORT = "5432"
 
 # Embedding model from Hugging Face
-MODEL_NAME = 'all-MiniLM-L6-v2' # Good balance of speed and quality
+MODEL_NAME = "all-MiniLM-L6-v2"  # Good balance of speed and quality
 
 # --- 2. Sample Data ---
 # A list of tuples: (title, abstract, field)
@@ -34,31 +23,32 @@ PAPERS_DATA = [
     (
         "Mapping Brain Circuits with High-Resolution Connectomics",
         "Recent advances in electron microscopy and computational analysis allow for the dense reconstruction of neural circuits. We mapped a cubic millimeter of mouse visual cortex, revealing novel synaptic motifs and cell type-specific connectivity patterns that challenge existing models of cortical processing.",
-        "Neuroscience"
+        "Neuroscience",
     ),
     (
         "A Programmable DNA-Based Platform for Engineering Synthetic Gene Circuits",
         "We have developed a robust and scalable framework for designing synthetic gene circuits using programmable DNA components. This platform enables the construction of complex logical functions within living cells, paving the way for advanced diagnostics and therapeutics.",
-        "Synthetic Biology"
+        "Synthetic Biology",
     ),
     (
         "The Role of Astrocytes in Synaptic Plasticity and Memory",
         "Beyond their supportive role, astrocytes are active participants in synaptic function. Our findings demonstrate that astrocytes modulate synaptic plasticity through gliotransmitter release, a mechanism crucial for learning and memory formation in the hippocampus.",
-        "Neuroscience"
+        "Neuroscience",
     ),
     (
         "Self-Assembling Protein Nanomaterials for Targeted Drug Delivery",
         "This work describes the design and synthesis of protein-based nanomaterials that self-assemble into well-defined structures. By functionalizing these materials with targeting ligands, we achieved highly specific delivery of chemotherapeutic agents to cancer cells, minimizing off-target toxicity.",
-        "Synthetic Biology"
+        "Synthetic Biology",
     ),
     (
         "Decoding Neural Representations of Visual Objects",
         "Using functional magnetic resonance imaging (fMRI) and machine learning, we investigated how the human brain represents visual objects. We found that object categories are encoded in distributed and overlapping patterns of neural activity across the ventral temporal cortex, providing insights into the brain's organizational principles.",
-        "Neuroscience"
-    )
+        "Neuroscience",
+    ),
 ]
 
 # --- 3. Core Functions ---
+
 
 def get_db_connection():
     """Establishes a connection to the PostgreSQL database."""
@@ -68,14 +58,17 @@ def get_db_connection():
             dbname=DB_NAME,
             user=DB_USER,
             password=DB_PASSWORD,
-            port=DB_PORT
+            port=DB_PORT,
         )
         print("Database connection established successfully.")
         return conn
     except psycopg2.OperationalError as e:
         print(f"Could not connect to the database: {e}")
-        print("Please ensure the PostgreSQL container is running. Use 'docker-compose up -d'.")
+        print(
+            "Please ensure the PostgreSQL container is running. Use 'docker-compose up -d'."
+        )
         return None
+
 
 def setup_database(conn):
     """Sets up the database by enabling pgvector and creating the papers table."""
@@ -85,7 +78,8 @@ def setup_database(conn):
 
         print("Creating the 'papers' table if it does not exist...")
         # The vector size (384) must match the model's output dimension
-        cur.execute("""
+        cur.execute(
+            """
             CREATE TABLE IF NOT EXISTS papers (
                 id SERIAL PRIMARY KEY,
                 title TEXT NOT NULL,
@@ -93,15 +87,18 @@ def setup_database(conn):
                 field VARCHAR(100),
                 embedding VECTOR(384)
             );
-        """)
+        """
+        )
         conn.commit()
     print("Database setup complete.")
+
 
 def generate_embeddings(model, texts):
     """Generates embeddings for a list of texts using the specified model."""
     print(f"Generating embeddings for {len(texts)} texts using '{MODEL_NAME}'...")
     embeddings = model.encode(texts, show_progress_bar=True)
     return embeddings
+
 
 def insert_data(conn, papers, embeddings):
     """Inserts paper data and their embeddings into the database."""
@@ -120,28 +117,32 @@ def insert_data(conn, papers, embeddings):
             embedding_list = embedding.tolist()
             cur.execute(
                 "INSERT INTO papers (title, abstract, field, embedding) VALUES (%s, %s, %s, %s)",
-                (title, abstract, field, embedding_list)
+                (title, abstract, field, embedding_list),
             )
         conn.commit()
     print(f"{len(papers)} records inserted successfully.")
 
+
 def perform_similarity_search(conn, model, query_text, top_k=3):
     """Performs a similarity search against the abstracts in the database."""
     print(f"\n--- Performing similarity search for query: '{query_text}' ---")
-    
+
     # Generate embedding for the query text
     query_embedding = model.encode(query_text)
     query_embedding_list = query_embedding.tolist()
 
     with conn.cursor(cursor_factory=DictCursor) as cur:
         # Use the cosine distance operator (<=>) from pgvector
-        cur.execute("""
+        cur.execute(
+            """
             SELECT title, field, abstract, 1 - (embedding <=> %s) AS similarity
             FROM papers
             ORDER BY embedding <=> %s
             LIMIT %s;
-        """, (query_embedding_list, query_embedding_list, top_k))
-        
+        """,
+            (query_embedding_list, query_embedding_list, top_k),
+        )
+
         results = cur.fetchall()
 
     if not results:
@@ -155,13 +156,14 @@ def perform_similarity_search(conn, model, query_text, top_k=3):
         print(f"  Similarity Score: {row['similarity']:.4f}")
         print(f"  Abstract: {row['abstract'][:150]}...")
 
+
 # --- 4. Main Execution Block ---
 
 if __name__ == "__main__":
-    
+
     # Establish database connection
     conn = get_db_connection()
-    
+
     # Load the embedding model
     print("Loading sentence-transformer model...")
     model = SentenceTransformer(MODEL_NAME)
@@ -180,7 +182,7 @@ if __name__ == "__main__":
         # Perform a sample search
         search_query = "brain connectivity"
         perform_similarity_search(conn, model, search_query)
-        
+
         # Close the database connection
         conn.close()
         print("\nDatabase connection closed.")

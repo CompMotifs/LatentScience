@@ -1,8 +1,6 @@
 import openai
 import os
-from typing import List, Dict, Any
-from app.models.embedding import EmbeddingRequest, EmbeddingResponse
-from app.models.paper import Paper, ResearchQuestion
+from typing import List
 from prompts.embedding_prompts import EmbeddingPrompts
 import logging
 

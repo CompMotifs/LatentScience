@@ -1,12 +1,11 @@
 import modal
-from app.config import settings
 from services.embedding_service import EmbeddingService
 from services.similarity_service import SimilarityService
 from services.explanation_service import ExplanationService
 from services.database_service import DatabaseService
 
 # Create Modal app
-app = modal.App("paper-links")
+app = modal.App("LatentScience")
 
 # Define the image with all dependencies
 image = (
@@ -125,7 +124,6 @@ def web_app():
     from fastapi import FastAPI
     from fastapi.staticfiles import StaticFiles
     from fastapi.responses import FileResponse
-    import os
 
     web_app = FastAPI()
 

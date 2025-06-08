@@ -22,6 +22,7 @@ A web application that finds semantic connections between research papers using 
 2. **Install dependencies**
    ```bash
    uv venv LatentScience
+   source LatentScience/bin/activate 
    uv pip install -r requirements.txt
    ```
 

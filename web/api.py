@@ -1,17 +1,17 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from app.models.paper import PaperSearchRequest, Paper
-from app.models.embedding import EmbeddingRequest
-from app.models.similarity import SimilarityBatch
+from app.models.paper import PaperSearchRequest
+from services.embedding_service import EmbeddingService
+from services.database_service import DatabaseService
+from services.explanation_service import ExplanationService
 from typing import List, Dict
 import logging
-import random
 
 logger = logging.getLogger(__name__)
 
 
 def create_api_app() -> FastAPI:
-    api = FastAPI(title="Paper Links API", version="1.0.0")
+    api = FastAPI(title="LatentScience API", version="1.0.0")
 
     # Add CORS middleware
     api.add_middleware(
@@ -26,10 +26,8 @@ def create_api_app() -> FastAPI:
     async def search_similar_papers(request: PaperSearchRequest):
         """Main endpoint for finding similar papers"""
         try:
-            # TODO: Replace this mock with actual Modal service calls
-            # For now, returning mock data that matches your frontend expectations
-
             # Mock papers related to the research question
+            # TODO: Replace with actual database search logic
             mock_papers = [
                 {
                     "title": "Machine Learning Applications in Genomics",
@@ -51,48 +49,29 @@ def create_api_app() -> FastAPI:
                 },
             ]
 
-            # Here you would normally:
             # 1. Generate embedding for the input paper/query
-            # embedding_service = EmbeddingServiceModal()
-            # query_embedding = await embedding_service.generate_embedding.remote(
-            #     request.paper.abstract + " " + request.research_question.question
-            # )
+            embedding_service = EmbeddingService()
+            query_embedding = await embedding_service.generate_embedding.remote(
+                request.paper.abstract + " " + request.research_question.question
+            )
 
             # 2. Search for similar papers in your database
-            # db_service = DatabaseServiceModal()
-            # similar_papers = await db_service.search_similar_papers.remote(
-            #     query_embedding, request.similarity_threshold
-            # )
+            db_service = DatabaseService()
+            similar_papers = await db_service.search_similar_papers.remote(
+                query_embedding, request.similarity_threshold
+            )
 
             # 3. Generate explanations for the connections
-            # explanation_service = ExplanationServiceModal()
-            # explanations = await explanation_service.batch_explain_connections.remote(
-            #     request.paper.dict(), similar_papers
-            # )
+            explanation_service = ExplanationService()
+            explanations = await explanation_service.batch_explain_connections.remote(
+                request.paper.dict(), similar_papers
+            )
 
+            # TODO: Return actual papers insetad of mock data
             return mock_papers
 
         except Exception as e:
             logger.error(f"Error in search_similar_papers: {e}")
-            raise HTTPException(status_code=500, detail=str(e))
-
-    @api.post("/api/generate-embedding")
-    async def generate_embedding(request: EmbeddingRequest):
-        """Generate embedding for given text"""
-        try:
-            # TODO: Integration with Modal EmbeddingService
-            # embedding_service = EmbeddingServiceModal()
-            # result = await embedding_service.generate_embedding.remote(
-            #     request.text, request.model
-            # )
-
-            # Mock response for now
-            return {
-                "embedding": [random.random() for _ in range(1536)],
-                "model": request.model,
-                "dimensions": 1536,
-            }
-        except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
     @api.get("/api/health")
