@@ -37,6 +37,13 @@ def find_comparison(abstract, research_question):
         paper_text=abstract, research_question=research_question)
     abstract_layman = get_claude_layman(prompt_abstract)
 
+    # Simplify Database text
+    list_of_db_prompts = database_prompts(csv_path, prompter)
+    list_of_db_layman = []
+    for prompt in list_of_db_prompts:
+        layman = get_claude_layman(prompt)
+        list_of_db_layman.append(layman)
+    
     # Generate embedding for abstract
     embedder = PaperEmbedder(model_name="all-MiniLM-L6-v2")
     embeddings_abstract = embedder.get_embedding(abstract_layman)
