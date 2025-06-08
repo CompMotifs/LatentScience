@@ -7,6 +7,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import tensorflow as tf
 from transformers import AutoTokenizer, TFAutoModel
+from claude_llm import get_claude_layman
 
 class Simplify():
     def __init__(self, layman_prompt):
