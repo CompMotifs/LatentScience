@@ -49,6 +49,18 @@ class EmbeddingPrompts:
     Keep it focused and under 400 words.
     """
     
+    def get_challenges_summary_prompt(self, paper_title: str, abstract: str) -> str:
+        """Task 3: Summarize key challenges of the paper for embedding"""
+        return f"""I'm providing you with a scientific paper. 
+    Please identify every challenge encountered in the paper. 
+    For each item you identify, provide a detailed but simple explanation 
+    focusing on how it works and the goal of its use. 
+    Make the explanation as simple as possible and use the most general term for every word.
+    
+    Title: {paper_title}
+    Abstract: {abstract}
+    """
+    
     
 class Paper:
     """

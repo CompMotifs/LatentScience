@@ -12,7 +12,11 @@
     
 
 Prompts for the above
-1. "I'm providing you with a scientific paper. Please identify every concept, method, and challenge present in the paper. For each item you identify, provide two explanations:
+1. Using only concept
+    - Prompt 1 (do this for each paper): "I'm providing you with a scientific paper. Please identify every challenge encountered in the paper. For each item you identify, provide a detailed but simple explanation focusing on how it works and the goal of its use. Make the explanation as simple as possible and use the most general term for every word."
+    - Prompt 2: "Take the following descriptions of challenges in two different papers and highlight similarities between them. The goal is to find common areas in disparate research fields that actually have the same goals, but where this is not obvious."
+2. Using all [concept, method, challenge]
+    - "I'm providing you with a scientific paper. Please identify every concept, method, and challenge present in the paper. For each item you identify, provide two explanations:
 
 - A detailed but simple explanation focusing on how it works and the goal of its use.
 - A rewritten version of that explanation, replacing all specific terms with the most general way of describing them."
