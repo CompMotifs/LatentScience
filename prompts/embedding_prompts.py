@@ -129,28 +129,27 @@ class PaperEmbedder:
             print("Please ensure the model name is correct and you have an internet connection.")
             raise
 
-    def get_embedding(self, abstract: str) -> np.ndarray:
+    def get_embedding(self, texts: Union[str, List[str]]):
         """
-        Generates a single LLM embedding for a given paper's title and abstract.
-
-        The title and abstract are concatenated to form a single input text,
-        which is then passed to the pre-trained model for embedding generation.
+        Compute embeddings for a single string or a list of strings.
 
         Args:
-            title (str): The title of the research paper.
-            abstract (str): The abstract of the research paper.
-
+          texts: Either one string or a list of strings.
+        
         Returns:
-            numpy.ndarray: A 1-D NumPy array representing the dense vector embedding
-                           of the paper. The dimensionality depends on the loaded model.
-                           For 'all-MiniLM-L6-v2', it's 384 dimensions.
+          A 2D numpy array of shape (n_texts, embedding_dim).
+          If a single string is passed, you'll still get shape (1, dim).
         """
-        # Generate the embedding using the loaded Sentence Transformer model.
-        # The .encode() method handles tokenization and forward pass through the model,
-        # returning a numpy array.
-        embedding = self.model.encode(abstract)
+        if isinstance(texts, str):
+          texts = [texts]        
+        
+        embeddings = self.model.encode(texts, convert_to_numpy=True)
 
-        return embedding
+        if self.normalize:
+            norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+            embeddings = embeddings / np.clip(norms, a_min=1e-9, a_max=None)
+        embeddings = torch.from_numpy(embeddings)
+        return embeddings
     
     
 def run(simp_abstract, prompt):
