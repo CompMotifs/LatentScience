@@ -2,13 +2,19 @@
 from LatentScience.services import SimilarityService
 
 
+def get_layman_abstract(prompt_abstract):
+    claude_output = call_claude(prompt_abstract)
+    
+    
+
 def find_comparison(abstract, research_question):
     
     # Simplify abstract text
     prompter = EmbeddingPrompts()
-    abstract_layman = prompter.get_rephrasing_prompt(
+    prompt_abstract = prompter.get_rephrasing_prompt(
         paper_text=abstract, research_question=research_question)
-    
+    abstract_layman = get_layman_abstract(call_claude(prompt_abstract))
+
     # Generate embedding for abstract
     embedder = PaperEmbedder(model_name="all-MiniLM-L6-v2")
     embeddings_abstract = embedder.get_embedding(abstract_layman)
