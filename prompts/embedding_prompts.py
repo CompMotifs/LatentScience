@@ -8,6 +8,33 @@ from sentence_transformers import SentenceTransformer
 import tensorflow as tf
 from transformers import AutoTokenizer, TFAutoModel
 
+class Simplify():
+    def __init__(self, layman_prompt):
+        self.layman_prompt = layman_prompt
+
+    def get_query_layman(self, abstract, query):
+        return get_claude_layman(abstract, query, self.layman_prompt)
+
+    def get_database_layman(self, csv_path, query):
+        """
+        Convert all the abstracts in the database into Layman Terms.
+
+        Args:
+            csv_path: The path to the csv file containing all the papers
+            query: The user input query
+
+        Returns:
+            List of Raw Responses from the LLM service
+        """
+        list_of_laymans = []
+        
+        with open(csv_path, mode="r", encoding="utf-8", newline="") as files:
+            reader = csv.reader(files)
+            next(reader)
+            for row in reader:
+                abstract = row[1]
+                layman = get_claude_layman(abstract, query, self.layman_prompt)
+                list_of_laymans.append(layman)
 
 class EmbeddingPrompts:
     def get_rephrasing_prompt(self, paper_text: str, research_question: str) -> str:
