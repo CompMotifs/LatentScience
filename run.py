@@ -1,7 +1,9 @@
 # We can rename / move this
 from LatentScience.prompts import EmbeddingPrompts, PaperEmbedder
 from LatentScience.services import SimilarityService
+import anthropic
 
+anthropic_client = anthropic.Anthropic(api_key="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")
 
 def get_claude_layman(paper_text, query_prompt, layman_prompt):
     message = anthropic_client.messages.create(
