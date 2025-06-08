@@ -1,6 +1,7 @@
 from fastapi import FastAPI
+from latentscience.api.routes import paper
 from latentscience.config import get_settings
-from latentscience.di import lifespan
+from latentscience.di import lifespan, setup_di
 
 
 def create_app() -> FastAPI:
@@ -16,13 +17,10 @@ def create_app() -> FastAPI:
 
     # Register routes
     app.include_router(
-        webhooks, prefix=f"{settings.api_prefix}/webhooks", tags=["webhooks"]
+        paper.router, prefix=f"{settings.api_prefix}/paper", tags=["paper"]
     )
-    app.include_router(health, prefix=f"{settings.api_prefix}/health", tags=["health"])
 
     # Set up dependency injection
     setup_di(app)
-
-    logfire.instrument_fastapi(app)
 
     return app

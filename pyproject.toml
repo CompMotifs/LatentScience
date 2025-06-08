@@ -127,3 +127,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["latentscience"]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.401",
+    "ruff>=0.11.13",
+]

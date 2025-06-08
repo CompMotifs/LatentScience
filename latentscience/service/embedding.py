@@ -1,5 +1,4 @@
 import numpy as np
-from openai import OpenAI
 from scipy.spatial.distance import cosine, euclidean, cityblock
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity

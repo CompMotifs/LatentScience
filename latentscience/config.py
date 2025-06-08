@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     pg_port: int = 5432
 
     # Application
+    api_prefix: str = "/api/v1"
     debug: bool = False
     log_level: str = "INFO"
     max_papers_per_search: int = 50

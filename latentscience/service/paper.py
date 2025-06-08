@@ -1,7 +1,7 @@
 import logging
 from openai import OpenAI
 from latentscience.database.paper import PaperRepository
-from latentscience.model.paper import Paper, SimilarPaper
+from latentscience.model.paper import SimilarPaper
 from latentscience.prompts.embedding_prompts import EmbeddingPrompts
 from latentscience.service.embedding import EmbeddingService
 

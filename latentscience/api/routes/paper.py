@@ -7,7 +7,7 @@ from latentscience.service.explanation import ExplanationService
 from latentscience.service.paper import PaperService
 
 
-router = APIRouter(prefix="/paper", tags=["paper"], route_class=DishkaRoute)
+router = APIRouter(tags=["paper"], route_class=DishkaRoute)
 
 
 @router.post("/search")

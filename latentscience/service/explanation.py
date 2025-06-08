@@ -1,8 +1,8 @@
 import openai
 import os
 from typing import Dict, List
-from latentscience.model.paper import Paper, PaperSearchRequest, SimilarPaper
-from prompts.explanation_prompts import ExplanationPrompts
+from latentscience.model.paper import PaperSearchRequest, SimilarPaper
+from latentscience.prompts.explanation_prompts import ExplanationPrompts
 import logging
 
 logger = logging.getLogger(__name__)
