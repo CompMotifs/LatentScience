@@ -24,7 +24,7 @@ model_cache_volume = modal.Volume.from_name("model-cache", create_if_missing=Tru
 @app.cls(
     image=image,
     volumes={"/data": database_volume},
-    secrets=[modal.Secret.from_name("database-secrets")],
+    # secrets=[modal.Secret.from_name("database-secrets")],
 )
 class DatabaseServiceModal:
     def __init__(self):
@@ -144,7 +144,7 @@ def web_app():
     image=image,
     secrets=[
         modal.Secret.from_name("openai-secret"),
-        modal.Secret.from_name("database-secrets"),
+        # modal.Secret.from_name("database-secrets"),
     ],
 )
 @modal.web_endpoint(method="POST", label="api")

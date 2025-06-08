@@ -16,7 +16,6 @@ class EmbeddingResponse(BaseModel):
     dimensions: int
     paper_id: Optional[str] = None
     embedding_type: str
-    created_at: Optional[datetime] = None
 
     @validator("dimensions")
     def validate_dimensions(cls, v, values):
@@ -33,4 +32,3 @@ class StoredEmbedding(BaseModel):
     dimensions: int
     embedding_type: str
     metadata: Dict[str, Any] = Field(default_factory=dict)
-    created_at: datetime

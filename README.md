@@ -16,17 +16,18 @@ A web application that finds semantic connections between research papers using 
 1. **Clone the repository**
    ```bash
    git clone <your-repo-url>
-   cd paper-links-app
+   cd LatentScience
    ```
 
 2. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   uv venv LatentScience
+   uv pip install -r requirements.txt
    ```
 
 3. **Install Modal CLI**
    ```bash
-   pip install modal
+   uv pip install modal
    modal token new
    ```
 

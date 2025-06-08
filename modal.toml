@@ -4,7 +4,7 @@ python_version = "3.9"
 [secrets]
 # Add your Modal secrets here
 openai-secret = ["OPENAI_API_KEY"]
-database-secrets = ["DATABASE_URL"]
+# database-secrets = ["DATABASE_URL"]
 # anthropic-secret = ["ANTHROPIC_API_KEY"]  # Optional
 
 [volumes]

@@ -35,4 +35,3 @@ class LinkExplanation(BaseModel):
     explanation: str = Field(..., min_length=50)
     key_connections: List[str] = Field(default_factory=list)
     confidence: float = Field(..., ge=0.0, le=1.0)
-    generated_at: datetime

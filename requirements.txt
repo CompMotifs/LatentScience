@@ -3,6 +3,7 @@ modal
 fastapi
 uvicorn
 pydantic>=2.0
+pydantic_settings
 python-dotenv
 
 # Database
