@@ -48,41 +48,49 @@ A web application that finds semantic connections between research papers using 
 
 ## 🏃‍♂️ Running the Application
 
-### Option 1: Full Modal Deployment (Recommended)
+### Local Development (Recommended)
+
+**Start the full environment:**
+```bash
+just local-up
+```
+
+**Common operations:**
+```bash
+# Refresh system (wipe database and restart)
+just local-refresh
+
+# Populate database with test data
+just local-populate
+
+# View logs from all services
+just local-logs
+
+# Stop all services
+just local-down
+
+# Access PostgreSQL shell
+just local-psql
+
+# Shell into API container
+just local-shell
+```
+
+The local environment includes:
+- API server: `http://localhost:8000`
+- Database: PostgreSQL on port 5432
+- Frontend: Next.js on port 3000
+
+### Modal Deployment (Production)
 
 1. **Deploy to Modal**
    ```bash
-   modal deploy app/main.py
+   modal deploy latentscience/main.py
    ```
 
-2. **Access the web interface**
-   - The deployment will provide URLs for:
-     - Web interface: `https://your-app-name--web-app.modal.run`
-     - API endpoint: `https://your-app-name--api-endpoint.modal.run`
-
-### Option 2: Local Development with Modal Services
-
-1. **Run Modal services locally**
+2. **Run Modal services locally**
    ```bash
-   modal serve app/main.py
-   ```
-
-2. **Access the application**
-   - Web interface: `http://localhost:8000`
-   - API docs: `http://localhost:8000/docs`
-
-### Option 3: Pure Local Development (Limited)
-
-1. **Set up local database**
-   ```bash
-   # Install and start PostgreSQL locally
-   createdb paper_links
-   ```
-
-2. **Run the FastAPI server**
-   ```bash
-   cd web
-   uvicorn api:app --reload --port 8000
+   modal serve latentscience/main.py
    ```
 
 ## 🔧 Configuration
@@ -186,13 +194,32 @@ pytest --cov=app tests/
 ### Project Structure
 
 ```
-paper-links-app/
-├── app/              # Core application and models
-├── services/         # Business logic services
-├── web/              # Web interface and API
-├── database/         # Database models and migrations
-├── prompts/          # LLM prompts and templates
-└── utils/            # Utility functions
+latentscience/
+├── app/              # Next.js frontend
+├── latentscience/    # Python backend
+│   ├── api/          # FastAPI web interface
+│   ├── models/       # Data models
+│   ├── services/     # Business logic services
+│   ├── prompts/      # LLM prompts and templates
+│   └── utils/        # Utility functions
+├── infra/            # Docker development environment
+└── scripts/          # Setup and utility scripts
+```
+
+### Development Commands
+
+```bash
+# Code quality
+just fix              # Auto-format and fix linting
+just lint             # Run linting and type checking
+just lint-file <file> # Lint specific file
+
+# Local environment
+just local-up         # Start services
+just local-refresh    # Wipe database and restart
+just local-populate   # Add test data to database
+just local-logs       # View all service logs
+just local-shell      # Shell into API container
 ```
 
 ### Adding New Features
