@@ -1,5 +1,5 @@
 import numpy as np
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional, Dict, Any
 
 
@@ -11,13 +11,13 @@ class EmbeddingRequest(BaseModel):
 
 
 class EmbeddingResponse(BaseModel):
-    embedding: List[float] = Field(..., min_items=1)
+    embedding: List[float] = Field(..., min_length=1)
     model: str
     dimensions: int
     paper_id: Optional[str] = None
     embedding_type: str
 
-    @validator("dimensions")
+    @field_validator("dimensions")
     def validate_dimensions(cls, v, values):
         if "embedding" in values and len(values["embedding"]) != v:
             raise ValueError("Dimensions must match embedding length")
