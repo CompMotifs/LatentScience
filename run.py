@@ -1,4 +1,5 @@
 # We can rename / move this
+from LatentScience.prompts import EmbeddingPrompts, PaperEmbedder
 from LatentScience.services import SimilarityService
 
 
