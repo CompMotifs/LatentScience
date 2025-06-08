@@ -21,7 +21,7 @@ def find_comparison(abstract, research_question):
     prompter = EmbeddingPrompts()
     prompt_abstract = prompter.get_rephrasing_prompt(
         paper_text=abstract, research_question=research_question)
-    abstract_layman = get_layman_abstract(call_claude(prompt_abstract))
+    abstract_layman = get_claude_layman(prompt_abstract)
 
     # Generate embedding for abstract
     embedder = PaperEmbedder(model_name="all-MiniLM-L6-v2")
