@@ -49,7 +49,7 @@ def find_comparison(abstract, research_question):
     embeddings_abstract = embedder.get_embedding(abstract_layman)
 
     # Generate embedding for database
-    embeddings_abstract = embedder.get_embedding(list_of_db_layman)
+    embeddings_database = embedder.get_embedding(list_of_db_layman)
     
     # Compare embedding with database embeddings
     big_number = 0
