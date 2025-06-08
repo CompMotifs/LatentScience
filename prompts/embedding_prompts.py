@@ -134,6 +134,21 @@ class PaperEmbedder:
         embedding = self.model.encode(text_to_embed)
 
         return embedding
+    
+    
+def run(simp_abstract, prompt):
+    """
+    Function to run the embedding process on a given abstract.
+    
+    Args:
+        abstract (str): The (simplified) abstract of the paper to be embedded.
+        
+    Returns:
+        numpy.ndarray: The embedding of the provided abstract.
+    """
+    embedder = PaperEmbedder(model_name='all-MiniLM-L6-v2')
+    return embedder.get_embedding(simp_abstract)
+    
 
 
 # Example Usage:
