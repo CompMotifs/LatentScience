@@ -70,7 +70,6 @@ local-shell:
 
 [working-directory: 'infra']
 local-down:
-    @echo "Taking {{SVC}} down..."
     docker compose {{LOCAL_ENV}}  down -v
 
 [working-directory: 'infra']

@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     pg_port: int = 5432
 
     # Application
+    api_prefix: str = "/api/v1"
     debug: bool = False
     log_level: str = "INFO"
     max_papers_per_search: int = 50
@@ -35,5 +36,6 @@ class Settings(BaseSettings):
         case_sensitive = False
 
 
-# Global settings instance
-settings = Settings()
+def get_settings() -> Settings:
+    """Returns the application settings."""
+    return Settings()

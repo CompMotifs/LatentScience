@@ -1,7 +1,8 @@
 import openai
 import os
 from typing import Dict, List
-from prompts.explanation_prompts import ExplanationPrompts
+from latentscience.model.paper import PaperSearchRequest, SimilarPaper
+from latentscience.prompts.explanation_prompts import ExplanationPrompts
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,12 +13,12 @@ class ExplanationService:
         self.client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.prompts = ExplanationPrompts()
 
-    def explain_connection(
-        self, paper1_data: Dict, paper2_data: Dict, similarity_score: float
+    async def explain_connection(
+        self, request: PaperSearchRequest, paper: SimilarPaper
     ) -> str:
         """Task 4: Generate explanation for link between papers"""
         prompt = self.prompts.get_explanation_prompt(
-            paper1_data, paper2_data, similarity_score
+            request, paper.paper, paper.similarity_score
         )
 
         try:
@@ -32,7 +33,7 @@ class ExplanationService:
             return response.choices[0].message.content.strip()
         except Exception as e:
             logger.error(f"Error generating explanation: {e}")
-            return f"Papers are connected with {similarity_score:.2f} similarity based on semantic analysis."
+            return f"Papers are connected with {paper.similarity_score:.2f} similarity based on semantic analysis."
 
     def batch_explain_connections(
         self, query_paper: Dict, similar_papers: List[Dict]

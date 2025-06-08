@@ -1,32 +1,18 @@
 import numpy as np
-from typing import List, Dict
 from scipy.spatial.distance import cosine, euclidean, cityblock
+from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-from latentscience.models.similarity import SimilarityMethod
+from typing import List
 import logging
+
+from latentscience.model.similarity import SimilarityMethod
 
 logger = logging.getLogger(__name__)
 
 
-class SimilarityService(nn.CosineSimilarity):
-    def __init__(self, top_choices=0, dim=1, eps=1e-6):
-        super(SimilarityService, self).__init__(dim=dim, eps=eps)
-        self.top_choices = top_choices
-
-    def forward(self, query, database):
-        similarity = F.cosine_similarity(query, database, self.dim, self.eps)
-        descending_idx = torch.argsort(similarity, descending=True)
-
-        if self.top_choices:
-            top_picks_idx = descending_idx[: self.top_choices]
-            top_picks = database_emb[top_picks_idx]
-            return top_picks, top_picks_idx
-        else:
-            return database_emb[descending_idx], descending_idx
-
-
-class SimilarityService:
-    def __init__(self):
+class EmbeddingService:
+    def __init__(self, model: str = "all-MiniLM-L6-v2"):
+        self.model = SentenceTransformer(model)
         self.methods = {
             SimilarityMethod.COSINE: self._cosine_similarity,
             SimilarityMethod.EUCLIDEAN: self._euclidean_similarity,
@@ -62,27 +48,24 @@ class SimilarityService:
             similarities.append(sim)
         return similarities
 
-    def find_most_similar(
-        self, query_embedding: List[float], embeddings: List[Dict], top_k: int = 10
-    ) -> List[Dict]:
-        """Find top-k most similar papers"""
-        embedding_vectors = [item["embedding"] for item in embeddings]
-        similarities = self.batch_similarity(query_embedding, embedding_vectors)
+    def generate_embedding(self, text: str) -> List[float]:
+        """Generate embedding for given text"""
+        try:
+            embedding = self.model.encode(text)
+            return embedding.tolist()
+        except Exception as e:
+            logger.error(f"Error generating embedding: {e}")
+            raise
 
-        # Combine similarities with paper data
-        results = []
-        for i, (similarity, paper_data) in enumerate(zip(similarities, embeddings)):
-            results.append(
-                {
-                    "paper_id": paper_data["paper_id"],
-                    "similarity": similarity,
-                    "paper_data": paper_data,
-                }
-            )
-
-        # Sort by similarity and return top-k
-        results.sort(key=lambda x: x["similarity"], reverse=True)
-        return results[:top_k]
+    def batch_generate_embeddings(
+        self, texts: List[str], model: str = "text-embedding-ada-002"
+    ) -> List[List[float]]:
+        """Generate embeddings for multiple texts"""
+        embeddings = []
+        for text in texts:
+            embedding = self.generate_embedding(text)
+            embeddings.append(embedding)
+        return embeddings
 
     def _cosine_similarity(self, v1: List[float], v2: List[float]) -> float:
         return 1 - cosine(v1, v2)

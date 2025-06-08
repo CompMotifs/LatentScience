@@ -1,6 +1,9 @@
+from latentscience.model.paper import Paper, PaperSearchRequest
+
+
 class ExplanationPrompts:
     def get_explanation_prompt(
-        self, paper1: dict, paper2: dict, similarity_score: float
+        self, request: PaperSearchRequest, paper: Paper, similarity_score: float
     ) -> str:
         """Task 4: Prompt for explaining connections between papers"""
         return f"""
@@ -8,12 +11,10 @@ You are a research analyst explaining connections between academic papers.
 Analyze the relationship between these two papers and provide a clear explanation.
 
 Paper 1:
-Title: {paper1.get('title', 'Unknown')}
-Abstract: {paper1.get('abstract', 'Not available')}
+Abstract: {request.abstract}
 
 Paper 2:
-Title: {paper2.get('title', 'Unknown')}
-Abstract: {paper2.get('abstract', 'Not available')}
+Abstract: {paper.abstract}
 
 Similarity Score: {similarity_score:.3f}
 
@@ -34,17 +35,17 @@ Write a clear, informative explanation in 2-3 paragraphs.
         papers_text = ""
         for i, paper in enumerate(similar_papers, 1):
             papers_text += f"""
-Paper {i} (Similarity: {paper['similarity']:.3f}):
-Title: {paper['paper_data'].get('title', 'Unknown')}
-Abstract: {paper['paper_data'].get('abstract', 'Not available')[:200]}...
+Paper {i} (Similarity: {paper["similarity"]:.3f}):
+Title: {paper["paper_data"].get("title", "Unknown")}
+Abstract: {paper["paper_data"].get("abstract", "Not available")[:200]}...
 """
 
         return f"""
 You are a research analyst explaining how multiple papers relate to a query paper.
 
 Query Paper:
-Title: {query_paper.get('title', 'Unknown')}
-Abstract: {query_paper.get('abstract', 'Not available')}
+Title: {query_paper.get("title", "Unknown")}
+Abstract: {query_paper.get("abstract", "Not available")}
 
 Related Papers:
 {papers_text}

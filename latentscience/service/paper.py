@@ -1,23 +1,42 @@
-import openai
-import os
-from typing import List
-from prompts.embedding_prompts import EmbeddingPrompts
 import logging
+from openai import OpenAI
+from latentscience.database.paper import PaperRepository
+from latentscience.model.paper import SimilarPaper
+from latentscience.prompts.embedding_prompts import EmbeddingPrompts
+from latentscience.service.embedding import EmbeddingService
 
 logger = logging.getLogger(__name__)
 
 
-class EmbeddingService:
-    def __init__(self):
-        self.client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+class PaperService:
+    """Paper Service"""
+
+    def __init__(
+        self,
+        paper_repo: PaperRepository,
+        embedding_service: EmbeddingService,
+        openai: OpenAI,
+    ):
+        self.paper_repo = paper_repo
+        self.embedding_service = embedding_service
+        self.openai = openai
         self.prompts = EmbeddingPrompts()
+
+    async def find_similar_papers(
+        self, query: str, abstract: str
+    ) -> list[SimilarPaper]:
+        """Find similar papers based on the given paper ID."""
+        search_query = f"{query}\n\nAbstract: {abstract}"
+        embedding = self.embedding_service.generate_embedding(search_query)
+        similar_papers = await self.paper_repo.find_similar_papers(embedding)
+        return similar_papers
 
     def rephrase_for_embedding(self, paper_text: str, research_question: str) -> str:
         """Task 2: Rephrase input paper and research question for better embeddings"""
         prompt = self.prompts.get_rephrasing_prompt(paper_text, research_question)
 
         try:
-            response = self.client.chat.completions.create(
+            response = self.openai.chat.completions.create(
                 model="gpt-4",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=1000,
@@ -32,18 +51,18 @@ class EmbeddingService:
 
     def generate_embedding(
         self, text: str, model: str = "text-embedding-ada-002"
-    ) -> List[float]:
+    ) -> list[float]:
         """Generate embedding for given text"""
         try:
-            response = self.client.embeddings.create(model=model, input=text)
+            response = self.openai.embeddings.create(model=model, input=text)
             return response.data[0].embedding
         except Exception as e:
             logger.error(f"Error generating embedding: {e}")
             raise
 
     def batch_generate_embeddings(
-        self, texts: List[str], model: str = "text-embedding-ada-002"
-    ) -> List[List[float]]:
+        self, texts: list[str], model: str = "text-embedding-ada-002"
+    ) -> list[list[float]]:
         """Generate embeddings for multiple texts"""
         embeddings = []
         for text in texts:
