@@ -23,7 +23,7 @@ def find_comparison(abstract, research_question):
     # embeddings_database = 
     
     # Compare embedding with database embeddings
-    big_number = int(1e6)
+    big_number = 0
     similarifier = SimilarityService(top_choices=big_number, dim=-1)
     
     top_picks, top_picks_idx = similarifier(embeddings_abstract, embeddings_database)
