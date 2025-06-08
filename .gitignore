@@ -25,6 +25,7 @@ share/python-wheels/
 .env
 .env.local
 .env.production
+latentsci
 
 # Database
 *.db
