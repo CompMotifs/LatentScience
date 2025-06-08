@@ -17,12 +17,6 @@ class EmbeddingPrompts:
     Your task is to rephrase and combine the given paper content and research question 
     to create a more focused, searchable text that will work better for embedding generation.
 
-    Paper Content:
-    {paper_text}
-
-    Research Question:
-    {research_question}
-
     Please create a concise, well-structured text that:
     1. Combines the key concepts from both the paper and research question
     2. Emphasizes the main research themes and methodologies
@@ -30,15 +24,18 @@ class EmbeddingPrompts:
     4. Maintains the semantic meaning while improving searchability
 
     Output a single paragraph of 150-300 words that would be optimal for finding related papers.
+    
+    Paper Content:
+    {paper_text}
+
+    Research Question:
+    {research_question}
     """
 
     def get_context_enhancement_prompt(self, paper_title: str, abstract: str) -> str:
         """Task 2: Enhance paper context for better embedding"""
         return f"""
     Enhance this research paper's context for better semantic search matching:
-
-    Title: {paper_title}
-    Abstract: {abstract}
 
     Please expand this into a comprehensive research summary that includes:
     - Key research domains and methodologies
@@ -47,6 +44,9 @@ class EmbeddingPrompts:
     - Technical approaches and innovations
 
     Keep it focused and under 400 words.
+    
+    Title: {paper_title}
+    Abstract: {abstract}
     """
     
     def get_challenges_summary_prompt(self, paper_title: str, abstract: str) -> str:
@@ -115,6 +115,7 @@ class PaperEmbedder:
             model_name (str): The name of the pre-trained model to load from
                               Hugging Face Model Hub.
                               Examples: 'all-MiniLM-L6-v2', 'multi-qa-MiniLM-L6-cos-v1',
+                              'malteos/scincl'
                               or domain-specific models like 'allenai/specter' (if compatible
                               and available via Sentence Transformers).
         """
@@ -128,7 +129,7 @@ class PaperEmbedder:
             print("Please ensure the model name is correct and you have an internet connection.")
             raise
 
-    def get_embedding(self, title: str, abstract: str) -> np.ndarray:
+    def get_embedding(self, abstract: str) -> np.ndarray:
         """
         Generates a single LLM embedding for a given paper's title and abstract.
 
@@ -144,15 +145,10 @@ class PaperEmbedder:
                            of the paper. The dimensionality depends on the loaded model.
                            For 'all-MiniLM-L6-v2', it's 384 dimensions.
         """
-        # Combine the title and abstract into a single string.
-        # A common practice is to separate them with a period or a special token.
-        # Using a period helps maintain semantic flow.
-        text_to_embed = f"{title}. {abstract}"
-
         # Generate the embedding using the loaded Sentence Transformer model.
         # The .encode() method handles tokenization and forward pass through the model,
         # returning a numpy array.
-        embedding = self.model.encode(text_to_embed)
+        embedding = self.model.encode(abstract)
 
         return embedding
     
@@ -214,9 +210,9 @@ if __name__ == "__main__":
 
         # --- Step 3: Generate Embeddings ---
         print("\nGenerating embeddings...")
-        embedding1 = embedder.get_embedding(p1.title, p1.abstract)
-        embedding2 = embedder.get_embedding(p2.title, p2.abstract)
-        embedding3 = embedder.get_embedding(p3.title, p3.abstract)
+        embedding1 = embedder.get_embedding(p1.abstract)
+        embedding2 = embedder.get_embedding(p2.abstract)
+        embedding3 = embedder.get_embedding(p3.abstract)
 
 
         # --- Step 4: Display Results ---
