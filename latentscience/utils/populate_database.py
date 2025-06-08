@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2.extras import DictCursor
 from sentence_transformers import SentenceTransformer
-
+from latentscience.utils.csv_to_tuples import load_papers_data
 from latentscience.config import Settings
 
 
@@ -10,34 +10,8 @@ MODEL_NAME = "all-MiniLM-L6-v2"  # Good balance of speed and quality
 
 # --- 2. Sample Data ---
 # A list of tuples: (title, abstract, field)
-# TODO: load from a file
-PAPERS_DATA = [
-    (
-        "Mapping Brain Circuits with High-Resolution Connectomics",
-        "Recent advances in electron microscopy and computational analysis allow for the dense reconstruction of neural circuits. We mapped a cubic millimeter of mouse visual cortex, revealing novel synaptic motifs and cell type-specific connectivity patterns that challenge existing models of cortical processing.",
-        "Neuroscience",
-    ),
-    (
-        "A Programmable DNA-Based Platform for Engineering Synthetic Gene Circuits",
-        "We have developed a robust and scalable framework for designing synthetic gene circuits using programmable DNA components. This platform enables the construction of complex logical functions within living cells, paving the way for advanced diagnostics and therapeutics.",
-        "Synthetic Biology",
-    ),
-    (
-        "The Role of Astrocytes in Synaptic Plasticity and Memory",
-        "Beyond their supportive role, astrocytes are active participants in synaptic function. Our findings demonstrate that astrocytes modulate synaptic plasticity through gliotransmitter release, a mechanism crucial for learning and memory formation in the hippocampus.",
-        "Neuroscience",
-    ),
-    (
-        "Self-Assembling Protein Nanomaterials for Targeted Drug Delivery",
-        "This work describes the design and synthesis of protein-based nanomaterials that self-assemble into well-defined structures. By functionalizing these materials with targeting ligands, we achieved highly specific delivery of chemotherapeutic agents to cancer cells, minimizing off-target toxicity.",
-        "Synthetic Biology",
-    ),
-    (
-        "Decoding Neural Representations of Visual Objects",
-        "Using functional magnetic resonance imaging (fMRI) and machine learning, we investigated how the human brain represents visual objects. We found that object categories are encoded in distributed and overlapping patterns of neural activity across the ventral temporal cortex, providing insights into the brain's organizational principles.",
-        "Neuroscience",
-    ),
-]
+file_path = "../database_papers_links.csv"
+load_papers_data(file_path)
 
 # --- 3. Core Functions ---
 
@@ -70,7 +44,8 @@ def setup_database(conn):
 
         print("Creating the 'papers' table if it does not exist...")
         # The vector size (384) must match the model's output dimension
-        cur.execute("""
+        cur.execute(
+            """
             CREATE TABLE IF NOT EXISTS papers (
                 id SERIAL PRIMARY KEY,
                 title TEXT NOT NULL,
@@ -78,7 +53,8 @@ def setup_database(conn):
                 field VARCHAR(100),
                 embedding VECTOR(384)
             );
-        """)
+        """
+        )
         conn.commit()
     print("Database setup complete.")
 
