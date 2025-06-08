@@ -9,7 +9,7 @@ csv_path = 'abstract.csv'
 anthropic_client = anthropic.Anthropic(api_key="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")
 
 
-def database_prompts(csv_path):
+def database_prompts(csv_path, prompter):
     with open(csv_path, mode="r", encoding="utf-8", newline="") as files:
         reader = csv.reader(files)
         next(reader)
