@@ -1,6 +1,19 @@
 # We can rename / move this
 from LatentScience.prompts import EmbeddingPrompts, PaperEmbedder
 from LatentScience.services import SimilarityService
+import anthropic
+import os
+
+anthropic_client = anthropic.Anthropic(api_key="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")
+
+def get_claude_layman(content_prompt):
+    message = anthropic_client.messages.create(
+        model="claude-3-opus-20240229",
+        max_tokens=1000,
+        temperature=0.3,
+        messages=[{"role": "user", "content": content_prompt}],
+        )
+    return message.content[0].text.strip()
 
 def find_comparison(abstract, research_question):
     
