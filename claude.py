@@ -20,8 +20,6 @@ app = modal.App("example-get-started")
 ANTHROPIC_API_KEY = "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"
 
 
-
-
 # Modal function to call Claude
 @app.function(
     image=claude_image,
