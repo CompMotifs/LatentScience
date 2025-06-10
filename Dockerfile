@@ -37,6 +37,7 @@ RUN uv pip install --system .
 # Copy application code
 COPY latentscience/ ./latentscience/
 COPY scripts/ ./scripts/
+COPY database_papers_links.csv ./database_papers_links.csv
 
 # Development Stage - Includes development tools
 FROM builder AS development
@@ -57,6 +58,7 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 # Copy application code
 COPY --from=builder /app/latentscience /app/latentscience
 COPY --from=builder /app/scripts /app/scripts
+COPY --from=builder /app/database_papers_links.csv /app/database_papers_links.csv
 
 # Make scripts executable
 RUN chmod +x /app/scripts/*.sh

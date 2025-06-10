@@ -1,10 +1,11 @@
 # Convert a CSV file with paper data into a list of tuples for further processing.
 import pandas as pd
 
+
 def load_papers_data(file_path):
     # Load the original CSV
     df = pd.read_csv(file_path)
-    df.dropna(how='all',inplace=True)
+    df.dropna(how="all", inplace=True)
 
     # Create two separate DataFrames: one for source, one for target
     source_df = df[["Source Domain", "Source Paper Title", "Source Abstract"]].copy()
@@ -23,5 +24,3 @@ def load_papers_data(file_path):
     # abstracts = [paper[2] for paper in PAPERS_DATA]
     return PAPERS_DATA
 
-file_path = "../database_papers_links.csv"
-load_papers_data(file_path)

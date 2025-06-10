@@ -10,11 +10,11 @@ class PaperStatus(str, Enum):
 
 
 class Paper(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = None
     title: str = Field(..., min_length=1, max_length=500)
     abstract: str = Field(..., min_length=10)
     field: str = Field(..., min_length=1, max_length=100)
-    embedding: list[float] = Field(..., min_length=1)
+    embedding: list[float] = Field(...)
 
 
 class SimilarPaper(BaseModel):

@@ -1,10 +1,9 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
-from dishka import AsyncContainer, Provider, make_async_container, Scope
+from dishka import AsyncContainer, Provider, make_async_container, Scope, provide
 from dishka.integrations.fastapi import DishkaRoute, setup_dishka
 from fastapi import FastAPI
 from psycopg2.extensions import connection
-from openai import OpenAI
 
 from latentscience.config import Settings
 from latentscience.database.paper import PaperRepository
@@ -14,12 +13,12 @@ from latentscience.service.explanation import ExplanationService
 
 
 class Core(Provider):
-    scope = Scope.APP
-
+    @provide(scope=Scope.APP)
     def provide_settings(self) -> Settings:
         """Provides the core settings for the application."""
         return Settings()
 
+    @provide(scope=Scope.REQUEST)
     def provide_connection(self, settings: Settings) -> connection:
         """Provides a database connection using the provided settings."""
         import psycopg2
@@ -31,16 +30,12 @@ class Core(Provider):
             password=settings.pg_password,
             port=settings.pg_port,
         )
+        conn.autocommit = True
         return conn
-
-    def provide_openai(self, settings: Settings) -> OpenAI:
-        """Provides OpenAI client using the provided settings."""
-        return OpenAI(api_key=settings.openai_api_key)
 
 
 class Repository(Provider):
-    scope = Scope.APP
-
+    @provide(scope=Scope.REQUEST)
     def provide_paper(self, conn: connection) -> PaperRepository:
         """Provides the PaperRepository instance."""
         return PaperRepository(conn)
@@ -48,19 +43,23 @@ class Repository(Provider):
 
 class Service(Provider):
     """Provides the core services for the application."""
-    scope = Scope.APP
 
+    @provide(scope=Scope.APP)
     def provide_embedding(self) -> EmbeddingService:
         """Provides the EmbeddingService instance."""
         return EmbeddingService()
 
+    @provide(scope=Scope.APP)
     def provide_explanation(self) -> ExplanationService:
         """Provides the ExplanationService instance."""
         return ExplanationService()
 
-    def provide_paper(self, paper_repo: PaperRepository, embedding_service: EmbeddingService, openai: OpenAI) -> PaperService:
+    @provide(scope=Scope.REQUEST)
+    def provide_paper(
+        self, paper_repo: PaperRepository, embedding_service: EmbeddingService
+    ) -> PaperService:
         """Provides the PaperService instance."""
-        return PaperService(paper_repo, embedding_service, openai)
+        return PaperService(paper_repo, embedding_service)
 
 
 def build_container() -> AsyncContainer:

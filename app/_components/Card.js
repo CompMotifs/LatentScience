@@ -1,6 +1,7 @@
 export default function Card({
   title,
   abstract,
+  similarity_score,
   handleDataChange,
   handleCompute,
 }) {
@@ -15,17 +16,14 @@ export default function Card({
   };
 
   return (
-    <div className="relative border-3 border-purple-700 w-1/3 m-3 rounded-[4rem] shadow-2xl">
-      <div className="absolute top-[3rem] left-[3rem] right-[3rem] bottom-[3rem] m-auto">
+    <div className="relative border-3 border-purple-700 w-1/3 m-3 rounded-[4rem] shadow-2xl h-[500px]">
+      <div className="absolute top-[3rem] left-[3rem] right-[3rem] bottom-[3rem] flex flex-col">
         <div className="text-xl font-bold mb-4">{title}</div>
         <div className="w-full h-px bg-slate-300 mb-4"></div>
-        <div className="text-md mb-6">{abstract}</div>
-        <button
-          onClick={handleCardClick}
-          className="bg-purple-700 text-white text-[16px] font-bold px-6 py-2 rounded shadow-xl origin-top-left transition-transform duration-200 hover:scale-105 active:scale-95"
-        >
-          This one is the most interesting.
-        </button>
+        <div className="text-md mb-4 flex-1 overflow-y-auto pr-2">{abstract}</div>
+        <div className="text-sm text-gray-600 mb-3">
+          Similarity: {similarity_score ? (similarity_score * 100).toFixed(1) + '%' : 'N/A'}
+        </div>
       </div>
     </div>
   );

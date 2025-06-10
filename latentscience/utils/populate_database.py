@@ -1,7 +1,6 @@
 import psycopg2
 from psycopg2.extras import DictCursor
 from sentence_transformers import SentenceTransformer
-from latentscience.utils.csv_to_tuples import load_papers_data
 from latentscience.config import Settings
 
 
@@ -10,8 +9,6 @@ MODEL_NAME = "all-MiniLM-L6-v2"  # Good balance of speed and quality
 
 # --- 2. Sample Data ---
 # A list of tuples: (title, abstract, field)
-file_path = "../database_papers_links.csv"
-load_papers_data(file_path)
 
 # --- 3. Core Functions ---
 
@@ -78,7 +75,7 @@ def insert_data(conn, papers, embeddings) -> None:
             return
 
         for paper, embedding in zip(papers, embeddings):
-            title, abstract, field = paper
+            field, title, abstract = paper
             # Convert numpy array to list for psycopg2
             embedding_list = embedding.tolist()
             cur.execute(

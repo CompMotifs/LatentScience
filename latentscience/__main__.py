@@ -1,5 +1,6 @@
 import argparse
 import os
+from pathlib import Path
 import sys
 
 from sentence_transformers import SentenceTransformer
@@ -7,12 +8,12 @@ import uvicorn
 
 from latentscience.api.app import create_app
 from latentscience.config import get_settings
+from latentscience.utils.csv import load_papers_data
 from latentscience.utils.populate_database import (
     get_db_connection,
     setup_database,
     generate_embeddings,
     insert_data,
-    PAPERS_DATA,
     MODEL_NAME,
 )
 
@@ -36,12 +37,15 @@ def populate_database():
     # Set up the database schema
     setup_database(conn)
 
+
+    file_path = Path(__file__).parent.parent / "database_papers_links.csv"
+    papers_data = load_papers_data(file_path)
     # Prepare data and generate embeddings
-    abstracts = [paper[1] for paper in PAPERS_DATA]
+    abstracts = [paper[1] for paper in papers_data]
     embeddings = generate_embeddings(model, abstracts)
 
     # Insert data into the database
-    insert_data(conn, PAPERS_DATA, embeddings)
+    insert_data(conn, papers_data, embeddings)
 
     # Close the database connection
     conn.close()

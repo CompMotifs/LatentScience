@@ -19,6 +19,7 @@ async def search_similar_papers(
     similar_papers = await paper_service.find_similar_papers(
         request.query, request.abstract
     )
+    print(similar_papers)
     explanation = await explanation_service.explain_connection(
         request, similar_papers[0]
     )

@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 class ExplanationService:
     def __init__(self):
-        self.client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.prompts = ExplanationPrompts()
 
     async def explain_connection(
@@ -22,15 +21,16 @@ class ExplanationService:
         )
 
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=500,
-                temperature=0.7,
-            )
-            if not response.choices or not response.choices[0].message.content:
-                raise ValueError("No valid rewponse from the LLM API")
-            return response.choices[0].message.content.strip()
+            return "TODO"
+            # response = self.client.chat.completions.create(
+            #     model="gpt-4",
+            #     messages=[{"role": "user", "content": prompt}],
+            #     max_tkkens=500,
+            #     temperature=0.7,
+            # )
+            # if not response.choices or not response.choices[0].message.content:
+            #     raise ValueError("No valid rewponse from the LLM API")
+            # return response.choices[0].message.content.strip()
         except Exception as e:
             logger.error(f"Error generating explanation: {e}")
             return f"Papers are connected with {paper.similarity_score:.2f} similarity based on semantic analysis."

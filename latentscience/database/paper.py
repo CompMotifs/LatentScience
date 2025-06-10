@@ -12,12 +12,12 @@ class PaperRepository:
         with self.conn.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT paper_id, title, abstract, field, embedding, embedding <-> %s AS similarity_score
+                SELECT id, title, abstract, field, embedding, 1 - (embedding <=> %s::vector) AS similarity_score
                 FROM papers
-                WHERE embedding <-> %s < %s
-                ORDER BY similarity_score
+                ORDER BY embedding <=> %s::vector
+                LIMIT 10
                 """,
-                (embedding, embedding, threshold),
+                (embedding, embedding),
             )
             results = cursor.fetchall()
             return [
@@ -27,35 +27,33 @@ class PaperRepository:
                         title=row[1],
                         abstract=row[2],
                         field=row[3],
-                        embedding=row[4],
+                        embedding=[],
                     ),
                     similarity_score=float(row[5]),
                 )
                 for row in results
             ]
 
-    def insert(
-        self, paper_id: str, title: str, abstract: str, authors: list[str], year: int
-    ):
+    def insert(self, id: str, title: str, abstract: str, authors: list[str], year: int):
         with self.conn.cursor() as cursor:
             cursor.execute(
                 """
-                INSERT INTO papers (paper_id, title, abstract, field, embedding)
+                INSERT INTO papers (id, title, abstract, field, embedding)
                 VALUES (%s, %s, %s, %s, %s)
                 """,
-                (paper_id, title, abstract, ", ".join(authors), year),
+                (id, title, abstract, ", ".join(authors), year),
             )
         self.conn.commit()
 
-    def get_by_id(self, paper_id: str) -> Paper | None:
+    def get_by_id(self, id: str) -> Paper | None:
         with self.conn.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT paper_id, title, abstract, field, embedding
+                SELECT id, title, abstract, field, embedding
                 FROM papers
-                WHERE paper_id = %s
+                WHERE id = %s
                 """,
-                (paper_id,),
+                (id,),
             )
             result = cursor.fetchone()
             if result:
@@ -72,7 +70,7 @@ class PaperRepository:
         with self.conn.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT paper_id, title, abstract, field, embedding
+                SELECT id, title, abstract, field, embedding
                 FROM papers
                 """
             )
