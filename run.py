@@ -6,7 +6,7 @@ import os
 
 csv_path = 'abstract.csv'
 
-anthropic_client = anthropic.Anthropic(api_key="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")
+anthropic_client = anthropic.Anthropic(api_key="")
 
 
 def database_prompts(csv_path, prompter):
