@@ -4,17 +4,30 @@ from LatentScience.services import SimilarityService
 import anthropic
 import os
 
-anthropic_client = anthropic.Anthropic(api_key="INSERT API HERE LATER")
+csv_path = 'abstract.csv'
 
-def get_claude_layman(paper_text, query_prompt, layman_prompt):
+anthropic_client = anthropic.Anthropic(api_key="")
+
+
+def database_prompts(csv_path, prompter):
+    with open(csv_path, mode="r", encoding="utf-8", newline="") as files:
+        reader = csv.reader(files)
+        next(reader)
+        for row in reader:
+            abstract = row[1]
+            prompt_abstract = prompter.get_rephrasing_prompt(paper_text=abstract, research_question=research_question)
+
+            list_of_prompts.append(prompt_abstract)
+    return list_of_prompts
+
+def get_claude_layman(content_prompt):
     message = anthropic_client.messages.create(
-        model=os.getenv("CLAUDE_MODEL"),
+        model="claude-3-opus-20240229",
         max_tokens=1000,
         temperature=0.3,
-        messages=[{"role": "user", "content": f"{layman_prompt}\n{query_prompt}\n\nPaper:\n{paper_text}"}],
+        messages=[{"role": "user", "content": content_prompt}],
         )
     return message.content[0].text.strip()
-    
 
 def find_comparison(abstract, research_question):
     
@@ -22,11 +35,21 @@ def find_comparison(abstract, research_question):
     prompter = EmbeddingPrompts()
     prompt_abstract = prompter.get_rephrasing_prompt(
         paper_text=abstract, research_question=research_question)
-    abstract_layman = get_layman_abstract(call_claude(prompt_abstract))
+    abstract_layman = get_claude_layman(prompt_abstract)
 
+    # Simplify Database text
+    list_of_db_prompts = database_prompts(csv_path, prompter)
+    list_of_db_layman = []
+    for prompt in list_of_db_prompts:
+        layman = get_claude_layman(prompt)
+        list_of_db_layman.append(layman)
+    
     # Generate embedding for abstract
     embedder = PaperEmbedder(model_name="all-MiniLM-L6-v2")
     embeddings_abstract = embedder.get_embedding(abstract_layman)
+
+    # Generate embedding for database
+    embeddings_database = embedder.get_embedding(list_of_db_layman)
     
     # Compare embedding with database embeddings
     big_number = 0
