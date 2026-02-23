@@ -1,6 +1,18 @@
+
+![LatentScience Logo](public/default-monochrome.svg)
+
 # LatentScience
 
 A web application that finds semantic connections between research papers using embeddings and AI-powered explanations.
+
+## Main idea
+
+Similar scientific concepts often look different across academic domains without researchers realising they are speaking the same language. We developed LatentScience to leverage AI to identify connections between papers that may not be explicit or obvious.
+
+We have included some hand-picked examples in the [database.csv](https://github.com/CompMotifs/LatentScience/blob/main/database.csv) file, which contains 17 example pairs of papers from source and target domains that share ideas. Paper contributions are increasingly decomposed into abstract components to highlight conceptual links.
+
+We hope that our approach can inspire cross-disciplinary ideation, empower researchers, and accelerate scientific discovery.
+
 
 ## 🚀 Quick Start
 
