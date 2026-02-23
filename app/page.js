@@ -24,10 +24,13 @@ export default function App() {
   const [papers, setPapers] = useState({
     title1: "",
     abstract1: "",
+    similarity1: null,
     title2: "",
     abstract2: "",
+    similarity2: null,
     title3: "",
     abstract3: "",
+    similarity3: null,
   });
 
   const handleDataChange = useCallback((field, value) => {
@@ -49,26 +52,15 @@ export default function App() {
     setLoading(true);
     
     try {
-      // Replace with your actual Modal API endpoint URL (TODO)
-      const MODAL_API_URL = process.env.NEXT_PUBLIC_MODAL_API_URL || 
-        "https://your-app-name--api-endpoint.modal.run";
-
-      const response = await fetch(`${MODAL_API_URL}/api/search-papers`, {
-        method: "POST",
+      const response = await fetch("http://localhost:8000/api/v1/paper/search", {
+        method: "POST", 
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          paper: {
-            title: "User Query Paper", // You might want to generate this
-            abstract: dataToSend.abstract,
-            authors: [],
-          },
-          research_question: {
-            question: dataToSend.query,
-            context: dataToSend.abstract,
-          },
-          max_results: 3, // We want 3 similar papers
+          query: dataToSend.query,
+          abstract: dataToSend.abstract,
+          max_results: 3,
           similarity_threshold: 0.7,
         }),
       });
@@ -80,13 +72,16 @@ export default function App() {
       const result = await response.json();
       
       // Update papers state with the results
-      if (result && result.length >= 3) {
-        handlePapersChange("title1", result[0].title || "");
-        handlePapersChange("abstract1", result[0].abstract || "");
-        handlePapersChange("title2", result[1].title || "");
-        handlePapersChange("abstract2", result[1].abstract || "");
-        handlePapersChange("title3", result[2].title || "");
-        handlePapersChange("abstract3", result[2].abstract || "");
+      if (result && result.papers && result.papers.length >= 3) {
+        handlePapersChange("title1", result.papers[0].paper.title || "");
+        handlePapersChange("abstract1", result.papers[0].paper.abstract || "");
+        handlePapersChange("similarity1", result.papers[0].similarity_score || 0);
+        handlePapersChange("title2", result.papers[1].paper.title || "");
+        handlePapersChange("abstract2", result.papers[1].paper.abstract || "");
+        handlePapersChange("similarity2", result.papers[1].similarity_score || 0);
+        handlePapersChange("title3", result.papers[2].paper.title || "");
+        handlePapersChange("abstract3", result.papers[2].paper.abstract || "");
+        handlePapersChange("similarity3", result.papers[2].similarity_score || 0);
       }
 
       // Move to next screen after successful API call

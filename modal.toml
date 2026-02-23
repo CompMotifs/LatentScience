@@ -1,0 +1,20 @@
+[build]
+python_version = "3.9"
+
+[secrets]
+# Add your Modal secrets here
+openai-secret = ["OPENAI_API_KEY"]
+# database-secrets = ["DATABASE_URL"]
+# anthropic-secret = ["ANTHROPIC_API_KEY"]  # Optional
+
+[volumes]
+# Persistent storage
+paper-links-db = "/data"
+model-cache = "/cache"
+logs = "/logs"
+
+[resources]
+# Default resource allocation
+cpu = 1.0
+memory = 2048  # MB
+timeout = 300  # seconds

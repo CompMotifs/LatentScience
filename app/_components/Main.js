@@ -13,18 +13,21 @@ export default function Main({
           <Card
             title={papers.title1 || "Loading..."}
             abstract={papers.abstract1 || "Fetching related papers..."}
+            similarity_score={papers.similarity1}
             handleDataChange={handleDataChange}
             handleCompute={handleCompute}
           />
           <Card
             title={papers.title2 || "Loading..."}
             abstract={papers.abstract2 || "Fetching related papers..."}
+            similarity_score={papers.similarity2}
             handleDataChange={handleDataChange}
             handleCompute={handleCompute}
           />
           <Card
             title={papers.title3 || "Loading..."}
             abstract={papers.abstract3 || "Fetching related papers..."}
+            similarity_score={papers.similarity3}
             handleDataChange={handleDataChange}
             handleCompute={handleCompute}
           />
