@@ -21,8 +21,7 @@ A web application that finds semantic connections between research papers using 
 
 2. **Install dependencies**
    ```bash
-   uv venv LatentScience
-   uv pip install -r requirements.txt
+   uv sync
    ```
 
 3. **Install Modal CLI**
@@ -135,14 +134,8 @@ model-cache = "/cache"
 curl -X POST "https://your-app--api-endpoint.modal.run/api/search-papers" \
   -H "Content-Type: application/json" \
   -d '{
-    "paper": {
-      "title": "Attention Is All You Need",
-      "abstract": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks...",
-      "authors": ["Ashish Vaswani", "Noam Shazeer"]
-    },
-    "research_question": {
-      "question": "What are the latest developments in transformer architectures?"
-    },
+    "query": "What are the latest developments in transformer architectures?",
+    "abstract": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks...",
     "max_results": 10,
     "similarity_threshold": 0.7
   }'
@@ -164,29 +157,26 @@ curl -X POST "https://your-app--api-endpoint.modal.run/api/generate-embedding" \
 ### Run Tests
 
 ```bash
-# Install test dependencies
-pip install pytest pytest-asyncio httpx
-
 # Run all tests
-pytest
+uv run pytest
 
 # Run specific test file
-pytest tests/test_embedding_service.py
+uv run pytest tests/test_embedding_service.py
 
 # Run with coverage
-pytest --cov=app tests/
+uv run pytest --cov=latentscience tests/
 ```
 
 ### Manual Testing
 
 1. **Test embedding generation**
    ```bash
-   modal run services.embedding_service::test_embedding
+   modal run latentscience.service.embedding::test_embedding
    ```
 
 2. **Test similarity calculation**
    ```bash
-   modal run services.similarity_service::test_similarity
+   modal run latentscience.service.embedding::test_similarity
    ```
 
 ## 🛠️ Development
@@ -198,10 +188,9 @@ latentscience/
 ├── app/              # Next.js frontend
 ├── latentscience/    # Python backend
 │   ├── api/          # FastAPI web interface
-│   ├── models/       # Data models
-│   ├── services/     # Business logic services
-│   ├── prompts/      # LLM prompts and templates
-│   └── utils/        # Utility functions
+│   ├── model/        # Pydantic data models
+│   ├── service/      # Business logic services
+│   └── prompts/      # LLM prompts and templates
 ├── infra/            # Docker development environment
 └── scripts/          # Setup and utility scripts
 ```
@@ -226,9 +215,9 @@ just local-shell      # Shell into API container
 
 1. **Create a new service**
    ```python
-   # services/new_service.py
-   from latentscience.models.your_model import YourModel
-   
+   # latentscience/service/new_service.py
+   from latentscience.model.your_model import YourModel
+
    class NewService:
        def process(self, data):
            # Your logic here
@@ -237,12 +226,12 @@ just local-shell      # Shell into API container
 
 2. **Add to Modal app**
    ```python
-   # app/main.py
+   # latentscience/main.py
    @app.cls(image=image)
    class NewServiceModal:
        def __init__(self):
            self.service = NewService()
-       
+
        @modal.method()
        def process(self, data):
            return self.service.process(data)
@@ -250,7 +239,7 @@ just local-shell      # Shell into API container
 
 3. **Add API endpoint**
    ```python
-   # web/api.py
+   # latentscience/api/api.py
    @api.post("/api/new-endpoint")
    async def new_endpoint(request: YourModel):
        # Call Modal service
@@ -332,12 +321,12 @@ python -c "from latentscience.main import DatabaseService; db = DatabaseService(
 2. **Enable debug mode**
    ```bash
    export DEBUG=true
-   modal serve app/main.py
+   modal serve latentscience/main.py
    ```
 
 3. **Test individual services**
    ```bash
-   modal run services.embedding_service::EmbeddingService.generate_embedding --text="test"
+   modal run latentscience.service.embedding::EmbeddingService.generate_embedding --text="test"
    ```
 
 ## 📈 Next Steps (Beyond Prototype)

@@ -1,8 +1,8 @@
 import numpy as np
+from typing import List
 from scipy.spatial.distance import cosine, euclidean, cityblock
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-from typing import List
 import logging
 
 from latentscience.model.similarity import SimilarityMethod

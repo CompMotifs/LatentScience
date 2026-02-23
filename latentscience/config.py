@@ -4,7 +4,9 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # API Keys
-    openai_api_key: Optional[str] = None
+    openai_api_key: Optional[str] = (
+        "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"
+    )
     anthropic_api_key: Optional[str] = None
 
     # Database

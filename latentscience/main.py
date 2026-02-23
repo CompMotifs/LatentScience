@@ -1,12 +1,11 @@
 import modal
 from latentscience.api.api import create_api_app
-from services.embedding_service import EmbeddingService
-from services.similarity_service import SimilarityService
-from services.explanation_service import ExplanationService
-from services.database_service import DatabaseService
+from latentscience.service.embedding import EmbeddingService
+from latentscience.service.explanation import ExplanationService
+from latentscience.service.database import DatabaseService
 
 # Create Modal app
-app = modal.App("paper-links")
+app = modal.App("LatentScience")
 
 # Define the image with all dependencies
 image = (
@@ -77,7 +76,7 @@ class EmbeddingServiceModal:
 @app.cls(image=image)
 class SimilarityServiceModal:
     def __init__(self):
-        self.service = SimilarityService()
+        self.service = EmbeddingService()
 
     @modal.method()
     def calculate_similarity(
